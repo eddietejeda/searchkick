@@ -421,6 +421,17 @@ module Searchkick
 
         # filters
         filters = where_filters(options[:where])
+
+        # nested filter
+        if nested_filter_value = options[:nested]
+          filters << {
+            nested: {
+              path: nested_filter_value[:path],
+              filter: { and: where_filters(nested_filter_value[:where]) }
+            }
+          }
+        end
+
         set_filters(payload, filters) if filters.any?
 
         # aggregations
