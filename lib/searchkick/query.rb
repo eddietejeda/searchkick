@@ -17,7 +17,7 @@ module Searchkick
         :boost_by, :boost_by_distance, :boost_where, :conversions, :debug, :emoji, :exclude, :execute, :explain,
         :fields, :highlight, :includes, :index_name, :indices_boost, :limit, :load,
         :match, :misspellings, :offset, :operator, :order, :padding, :page, :per_page, :profile,
-        :request_params, :routing, :select, :similar, :smart_aggs, :suggest, :track, :type, :where]
+        :request_params, :routing, :select, :similar, :smart_aggs, :suggest, :track, :type, :where, :nested]
       raise ArgumentError, "unknown keywords: #{unknown_keywords.join(", ")}" if unknown_keywords.any?
 
       term = term.to_s
@@ -423,7 +423,8 @@ module Searchkick
         filters = where_filters(options[:where])
 
         # nested filter
-        if nested_filter_value = options[:nested]
+        nested_filter_value = options[:nested]
+        if nested_filter_value && options[:where].any?
           filters << {
             nested: {
               path: nested_filter_value[:path],
